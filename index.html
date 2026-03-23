@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUTO 5IVE — 555 Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;700&family=Crimson+Pro:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #050608;
+  --deep: #080c0f;
+  --teal-dark: #091418;
+  --red: #e83a00;
+  --orange: #ff6b1a;
+  --glow: #ff5500;
+  --teal: #00e5cc;
+  --teal-dim: #00a896;
+  --cream: #e8ddd0;
+  --muted: #7a8a8a;
+  --border: rgba(0,229,204,0.12);
+  --border-red: rgba(232,58,0,0.25);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+::selection { background: var(--red); color: #fff; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: 'IBM Plex Mono', monospace;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* GRAIN OVERLAY */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:999; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.35;
+}
+
+/* SCANLINES */
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:998; pointer-events:none;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+}
+
+/* NAV */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 20px 40px;
+  background: linear-gradient(180deg, rgba(5,6,8,0.95) 0%, transparent 100%);
+  backdrop-filter: blur(4px);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 4px;
+  color: var(--cream);
+  text-decoration: none;
+}
+
+.nav-logo span { color: var(--red); }
+
+.nav-links {
+  display:flex; gap:32px; list-style:none;
+}
+
+.nav-links a {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted); text-decoration:none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--teal); }
+
+/* HERO */
+#hero {
+  min-height: 100vh;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  position: relative;
+  overflow: hidden;
+  padding: 100px 40px 60px;
+}
+
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 60%, rgba(232,58,0,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0,229,204,0.04) 0%, transparent 60%),
+    var(--black);
+}
+
+.hero-grid {
+  position:absolute; inset:0; opacity:0.06;
+  background-image:
+    linear-gradient(rgba(0,229,204,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,204,0.5) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+.hero-eyeglow {
+  position:absolute; top:15%; left:50%; transform:translateX(-50%);
+  width:300px; height:80px;
+  background: radial-gradient(ellipse at 35% 50%, rgba(255,80,0,0.4) 0%, transparent 50%),
+              radial-gradient(ellipse at 65% 50%, rgba(255,80,0,0.4) 0%, transparent 50%);
+  animation: eyepulse 3s ease-in-out infinite;
+  filter: blur(8px);
+}
+
+@keyframes eyepulse {
+  0%,100% { opacity:0.6; transform:translateX(-50%) scale(1); }
+  50% { opacity:1; transform:translateX(-50%) scale(1.1); }
+}
+
+.hero-content { position:relative; z-index:2; text-align:center; }
+
+.hero-tag {
+  display:inline-block;
+  font-size: 11px; letter-spacing: 5px; text-transform:uppercase;
+  color: var(--teal); margin-bottom: 20px;
+  border: 1px solid var(--teal-dim);
+  padding: 6px 16px;
+  animation: fadeup 0.8s ease both;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(80px, 15vw, 160px);
+  line-height: 0.9;
+  letter-spacing: 8px;
+  color: var(--cream);
+  animation: fadeup 0.8s 0.1s ease both;
+  position:relative;
+}
+
+.hero-title .five { color: var(--red); position:relative; }
+.hero-title .five::after {
+  content: '5IVE';
+  position:absolute; left:2px; top:2px;
+  color: var(--teal);
+  opacity: 0.15;
+  clip-path: polygon(0 30%, 100% 30%, 100% 60%, 0 60%);
+}
+
+.hero-subtitle {
+  font-size: 13px; letter-spacing: 6px; text-transform:uppercase;
+  color: var(--muted); margin-top: 16px; margin-bottom: 40px;
+  animation: fadeup 0.8s 0.2s ease both;
+}
+
+.hero-stats {
+  display:flex; gap:48px; justify-content:center; margin-bottom: 48px;
+  animation: fadeup 0.8s 0.3s ease both;
+}
+
+.hero-stat { text-align:center; }
+.hero-stat-num {
+  font-family:'Bebas Neue'; font-size:40px; letter-spacing:3px;
+  color: var(--cream); display:block;
+}
+.hero-stat-label {
+  font-size: 10px; letter-spacing: 4px; color: var(--muted); text-transform:uppercase;
+}
+
+.hero-cta {
+  display:flex; gap:16px; justify-content:center;
+  animation: fadeup 0.8s 0.4s ease both;
+}
+
+.btn-primary {
+  background: var(--red); color: #fff; border: none;
+  font-family: 'IBM Plex Mono'; font-size: 12px; letter-spacing: 3px; text-transform:uppercase;
+  padding: 14px 32px; cursor:pointer;
+  transition: all 0.2s;
+  position:relative; overflow:hidden;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+}
+
+.btn-primary::before {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+.btn-primary:hover::before { transform: translateX(100%); }
+.btn-primary:hover { background: #ff4d0d; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(232,58,0,0.4); }
+
+.btn-secondary {
+  background: transparent; color: var(--teal); 
+  border: 1px solid var(--teal-dim);
+  font-family: 'IBM Plex Mono'; font-size: 12px; letter-spacing: 3px; text-transform:uppercase;
+  padding: 14px 32px; cursor:pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: rgba(0,229,204,0.08); border-color: var(--teal); }
+
+.scroll-hint {
+  position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
+  font-size:10px; letter-spacing:3px; color:var(--muted); text-transform:uppercase;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+@keyframes fadeup {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* SECTION BASE */
+section {
+  padding: 100px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size:10px; letter-spacing:5px; text-transform:uppercase; color: var(--teal);
+  margin-bottom: 16px;
+  display:flex; align-items:center; gap:12px;
+}
+.section-label::before { content:''; display:block; width:24px; height:1px; background:var(--teal); }
+
+.section-title {
+  font-family:'Bebas Neue'; font-size: clamp(40px,6vw,72px);
+  letter-spacing:4px; line-height:1; margin-bottom:48px;
+  color: var(--cream);
+}
+
+/* COLLECTION PREVIEW */
+#collection { max-width:100%; padding: 80px 40px; }
+#collection > * { max-width:1200px; margin:0 auto; }
+
+.art-grid {
+  display:grid; grid-template-columns: repeat(4, 1fr); gap:2px;
+  margin-top:40px;
+}
+
+.art-card {
+  position:relative; overflow:hidden; aspect-ratio:1;
+  cursor:pointer;
+}
+
+.art-card img {
+  width:100%; height:100%; object-fit:cover;
+  transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.4s;
+  filter: saturate(0.8) brightness(0.85);
+}
+
+.art-card:hover img {
+  transform: scale(1.05);
+  filter: saturate(1.1) brightness(1);
+}
+
+.art-card-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(0deg, rgba(5,6,8,0.8) 0%, transparent 50%);
+  opacity:0; transition: opacity 0.3s;
+  display:flex; align-items:flex-end; padding:20px;
+}
+.art-card:hover .art-card-overlay { opacity:1; }
+
+.art-card-num {
+  font-family:'Bebas Neue'; font-size:48px; letter-spacing:2px;
+  color: rgba(255,255,255,0.15);
+  position:absolute; top:12px; left:16px;
+}
+
+.art-card-tag {
+  font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color: var(--teal); border: 1px solid var(--teal-dim); padding:4px 10px;
+}
+
+/* QUEST SECTION */
+#quest {
+  position:relative;
+}
+
+.quest-layout {
+  display:grid; grid-template-columns: 1fr 380px; gap:60px; align-items:start;
+}
+
+.quest-intro {
+  font-family:'Crimson Pro'; font-size:20px; line-height:1.7;
+  color: rgba(232,221,208,0.75); margin-bottom:40px;
+  max-width:480px;
+}
+
+.task-list {
+  display:flex; flex-direction:column; gap:2px;
+}
+
+.task-item {
+  display:flex; align-items:center; gap:16px;
+  padding: 16px 20px;
+  background: rgba(9,20,24,0.8);
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  cursor:pointer;
+}
+
+.task-item:hover {
+  border-left-color: var(--teal);
+  background: rgba(0,229,204,0.04);
+}
+
+.task-item.done {
+  border-left-color: var(--red);
+  background: rgba(232,58,0,0.04);
+}
+
+.task-item.done .task-check { background:var(--red); border-color:var(--red); }
+.task-item.done .task-check::after { content:'✓'; font-size:10px; }
+
+.task-check {
+  width:20px; height:20px; flex-shrink:0;
+  border: 1px solid var(--muted);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:#fff;
+  transition: all 0.2s;
+}
+
+.task-info { flex:1; }
+.task-name { font-size:13px; letter-spacing:1px; color:var(--cream); }
+.task-desc { font-size:11px; color:var(--muted); margin-top:3px; }
+
+.task-pts {
+  font-family:'Bebas Neue'; font-size:22px; letter-spacing:1px; color:var(--teal);
+}
+
+/* SIGNUP CARD */
+.signup-card {
+  background: var(--teal-dark);
+  border: 1px solid var(--border);
+  padding: 32px;
+  position:sticky; top:100px;
+}
+
+.signup-card-title {
+  font-family:'Bebas Neue'; font-size:28px; letter-spacing:3px;
+  margin-bottom:8px;
+}
+
+.signup-card-sub {
+  font-size:11px; letter-spacing:2px; color:var(--muted); text-transform:uppercase;
+  margin-bottom:28px; padding-bottom:24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-group { margin-bottom:16px; }
+
+.form-label {
+  display:block; font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color: var(--teal); margin-bottom:8px;
+}
+
+.form-input {
+  width:100%; padding:12px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: var(--cream);
+  font-family:'IBM Plex Mono'; font-size:12px;
+  outline:none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus { border-color: var(--teal-dim); }
+.form-input::placeholder { color: var(--muted); }
+
+.x-btn {
+  width:100%;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  padding: 12px;
+  background: #000; color:#fff;
+  border: 1px solid rgba(255,255,255,0.15);
+  font-family:'IBM Plex Mono'; font-size:12px; letter-spacing:2px;
+  cursor:pointer; margin-bottom:16px;
+  transition: all 0.2s;
+}
+.x-btn:hover { background: #111; border-color: rgba(255,255,255,0.3); }
+
+.x-icon { font-size:14px; font-weight:700; }
+
+.points-display {
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 12px 14px;
+  background: rgba(255,107,26,0.08);
+  border: 1px solid var(--border-red);
+  margin-bottom:20px;
+}
+
+.points-label { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); }
+.points-val { font-family:'Bebas Neue'; font-size:28px; letter-spacing:2px; color:var(--orange); }
+
+.ref-box {
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  font-size:11px; color:var(--muted);
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:16px;
+}
+
+.ref-copy {
+  font-size:10px; letter-spacing:2px; color:var(--teal); cursor:pointer;
+  background:none; border:none; font-family:'IBM Plex Mono';
+}
+.ref-copy:hover { color:#fff; }
+
+/* LEADERBOARD */
+#leaderboard { }
+
+.lb-header {
+  display:grid; grid-template-columns: 40px 1fr auto auto;
+  gap:16px; padding: 8px 20px;
+  font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--muted);
+  border-bottom: 1px solid var(--border);
+  margin-bottom:2px;
+}
+
+.lb-row {
+  display:grid; grid-template-columns: 40px 1fr auto auto;
+  gap:16px; padding: 14px 20px;
+  background: rgba(9,20,24,0.6);
+  border: 1px solid var(--border);
+  border-top: none;
+  align-items:center;
+  transition: all 0.2s;
+}
+
+.lb-row:hover { background: rgba(0,229,204,0.04); }
+
+.lb-row:first-of-type { border-top: 1px solid var(--border); }
+
+.lb-rank {
+  font-family:'Bebas Neue'; font-size:22px; letter-spacing:1px;
+}
+
+.lb-rank.gold   { color: #f5c842; }
+.lb-rank.silver { color: #a8b8b8; }
+.lb-rank.bronze { color: #cc7a3a; }
+.lb-rank.other  { color: var(--muted); }
+
+.lb-name {
+  font-size:13px; letter-spacing:1px;
+  display:flex; align-items:center; gap:10px;
+}
+
+.lb-badge {
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  padding: 3px 8px; background: rgba(232,58,0,0.15); border: 1px solid var(--border-red);
+  color: var(--orange);
+}
+
+.lb-pts { font-family:'Bebas Neue'; font-size:24px; letter-spacing:1px; color:var(--teal); }
+.lb-refs { font-size:11px; color:var(--muted); text-align:right; }
+
+.lb-you {
+  border: 1px solid rgba(232,58,0,0.4) !important;
+  background: rgba(232,58,0,0.06) !important;
+}
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px;
+  display:flex; justify-content:space-between; align-items:center;
+  max-width:1200px; margin:0 auto 40px;
+}
+
+.footer-logo {
+  font-family:'Bebas Neue'; font-size:24px; letter-spacing:4px;
+  color: rgba(232,221,208,0.4);
+}
+
+.footer-logo span { color: rgba(232,58,0,0.6); }
+
+.footer-links { display:flex; gap:24px; }
+.footer-links a {
+  font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color: var(--muted); text-decoration:none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--teal); }
+
+.footer-copy {
+  font-size:10px; letter-spacing:2px; color: var(--muted);
+}
+
+/* DIVIDER */
+.divider {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 auto;
+}
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:30px; right:30px; z-index:1000;
+  background: var(--teal-dark); border: 1px solid var(--teal-dim);
+  padding: 14px 20px; font-size:12px; letter-spacing:1px;
+  color: var(--teal); transform: translateY(100px); opacity:0;
+  transition: all 0.3s;
+}
+.toast.show { transform: translateY(0); opacity:1; }
+
+/* RESPONSIVE */
+@media(max-width:900px) {
+  .art-grid { grid-template-columns: repeat(2,1fr); }
+  .quest-layout { grid-template-columns: 1fr; }
+  .signup-card { position:static; }
+  nav { padding: 16px 20px; }
+  .nav-links { display:none; }
+  section { padding: 60px 20px; }
+  #hero { padding: 80px 20px 60px; }
+  .hero-stats { gap:24px; }
+  footer { flex-direction:column; gap:20px; text-align:center; }
+  .lb-header, .lb-row { grid-template-columns: 36px 1fr auto; }
+  .lb-refs { display:none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">AUTO <span>5</span>IVE</a>
+  <ul class="nav-links">
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#quest">Whitelist</a></li>
+    <li><a href="#leaderboard">Leaderboard</a></li>
+    <li><a href="https://x.com/Auto5ive" target="_blank">X / Twitter</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-eyeglow"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">// Channel 5.0 — Genesis Drop</div>
+    <h1 class="hero-title">AUTO <span class="five">5IVE</span></h1>
+    <p class="hero-subtitle">555 Operatives &nbsp;·&nbsp; Ethereum &nbsp;·&nbsp; Mint TBA</p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">555</span>
+        <span class="hero-stat-label">Supply</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">ETH</span>
+        <span class="hero-stat-label">Chain</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" id="wl-count">—</span>
+        <span class="hero-stat-label">Registered</span>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.getElementById('quest').scrollIntoView({behavior:'smooth'})">
+        Secure Your Spot
+      </button>
+      <button class="btn-secondary" onclick="window.open('https://x.com/Auto5ive','_blank')">
+        Follow on X
+      </button>
+    </div>
+  </div>
+
+  <div class="scroll-hint">↓ &nbsp; scroll down</div>
+</div>
+
+<!-- COLLECTION -->
+<div class="divider"></div>
+<section id="collection">
+  <div class="section-label">// 01 — The Operatives</div>
+  <h2 class="section-title">555 UNIQUE<br>OPERATIVES</h2>
+
+  <div class="art-grid">
+    <div class="art-card">
+      <div class="art-card-num">005</div>
+      <img src="5.png" alt="Operative #5" loading="lazy">
+      <div class="art-card-overlay">
+        <span class="art-card-tag">Channel Alpha</span>
+      </div>
+    </div>
+    <div class="art-card">
+      <div class="art-card-num">097</div>
+      <img src="97.png" alt="Operative #97" loading="lazy">
+      <div class="art-card-overlay">
+        <span class="art-card-tag">Deep Cover</span>
+      </div>
+    </div>
+    <div class="art-card">
+      <div class="art-card-num">130</div>
+      <img src="130.png" alt="Operative #130" loading="lazy">
+      <div class="art-card-overlay">
+        <span class="art-card-tag">Rogue Signal</span>
+      </div>
+    </div>
+    <div class="art-card">
+      <div class="art-card-num">187</div>
+      <img src="187.png" alt="Operative #187" loading="lazy">
+      <div class="art-card-overlay">
+        <span class="art-card-tag">Ghost Protocol</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUEST -->
+<div class="divider"></div>
+<section id="quest">
+  <div class="section-label">// 02 — Whitelist Mission</div>
+  <h2 class="section-title">EARN YOUR<br>SPOT</h2>
+
+  <div class="quest-layout">
+    <div>
+      <p class="quest-intro">
+        Complete missions to earn points. Top 200 point holders secure a guaranteed mint spot.
+        The next 355 highest earners get FCFS access. No wallet connection required — paste your address.
+      </p>
+
+      <div class="task-list" id="task-list">
+        <div class="task-item" data-task="follow" data-pts="100" onclick="completeTask(this)">
+          <div class="task-check"></div>
+          <div class="task-info">
+            <div class="task-name">Follow @Auto5ive on X</div>
+            <div class="task-desc">Follow the official account — tap to verify</div>
+          </div>
+          <div class="task-pts">+100</div>
+        </div>
+        <div class="task-item" data-task="retweet" data-pts="150" onclick="completeTask(this)">
+          <div class="task-check"></div>
+          <div class="task-info">
+            <div class="task-name">Repost the pinned post</div>
+            <div class="task-desc">Repost & tag a friend for bonus visibility</div>
+          </div>
+          <div class="task-pts">+150</div>
+        </div>
+        <div class="task-item" data-task="like" data-pts="50" onclick="completeTask(this)">
+          <div class="task-check"></div>
+          <div class="task-info">
+            <div class="task-name">Like the pinned post</div>
+            <div class="task-desc">Boost the algorithm reach</div>
+          </div>
+          <div class="task-pts">+50</div>
+        </div>
+        <div class="task-item" data-task="wallet" data-pts="50" onclick="completeTask(this)">
+          <div class="task-check"></div>
+          <div class="task-info">
+            <div class="task-name">Register your ETH wallet</div>
+            <div class="task-desc">Paste your 0x address in the form →</div>
+          </div>
+          <div class="task-pts">+50</div>
+        </div>
+        <div class="task-item" data-task="refer1" data-pts="200" onclick="completeTask(this)">
+          <div class="task-check"></div>
+          <div class="task-info">
+            <div class="task-name">Refer 1 operative</div>
+            <div class="task-desc">Share your referral link and get signups</div>
+          </div>
+          <div class="task-pts">+200</div>
+        </div>
+        <div class="task-item" data-task="refer5" data-pts="600" onclick="completeTask(this)">
+          <div class="task-check"></div>
+          <div class="task-info">
+            <div class="task-name">Refer 5 operatives</div>
+            <div class="task-desc">Top recruiters get GTD allocation</div>
+          </div>
+          <div class="task-pts">+600</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNUP CARD -->
+    <div class="signup-card">
+      <div class="signup-card-title">Register Operative</div>
+      <div class="signup-card-sub">Mint TBA — be ready</div>
+
+      <button class="x-btn" id="x-login-btn" onclick="connectX()">
+        <span class="x-icon">𝕏</span>
+        <span id="x-btn-text">Connect with X</span>
+      </button>
+
+      <div class="form-group">
+        <label class="form-label">ETH Wallet Address</label>
+        <input type="text" class="form-input" id="wallet-input" placeholder="0x..." maxlength="42">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">X Handle (manual)</label>
+        <input type="text" class="form-input" id="handle-input" placeholder="@yourhandle">
+      </div>
+
+      <div class="points-display">
+        <span class="points-label">Points Earned</span>
+        <span class="points-val" id="total-points">0</span>
+      </div>
+
+      <div class="ref-box">
+        <span id="ref-link" style="font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;">
+          auto5ive.xyz/r/—
+        </span>
+        <button class="ref-copy" onclick="copyRef()">COPY</button>
+      </div>
+
+      <button class="btn-primary" style="width:100%;clip-path:none;" onclick="saveRegistration()">
+        Save Registration
+      </button>
+
+      <p style="font-size:10px;color:var(--muted);margin-top:12px;line-height:1.6;letter-spacing:0.5px;">
+        No wallet connection. Your address is only used for mint delivery. We never ask for private keys.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<div class="divider"></div>
+<section id="leaderboard">
+  <div class="section-label">// 03 — Intelligence Rankings</div>
+  <h2 class="section-title">OPERATIVE<br>LEADERBOARD</h2>
+
+  <div class="lb-header">
+    <span>Rank</span>
+    <span>Operative</span>
+    <span>Points</span>
+    <span>Refs</span>
+  </div>
+
+  <div id="lb-rows"></div>
+
+  <p style="margin-top:24px;font-size:11px;color:var(--muted);letter-spacing:1px;">
+    Top 200 operatives receive GTD mint allocation. Ranks 201–555 receive FCFS access. Updates every 10 minutes.
+  </p>
+</section>
+
+<div class="divider" style="max-width:1200px;margin:0 auto;"></div>
+<footer>
+  <div class="footer-logo">AUTO <span>5</span>IVE</div>
+  <div class="footer-links">
+    <a href="https://x.com/Auto5ive" target="_blank">X / Twitter</a>
+    <a href="#quest">Whitelist</a>
+    <a href="#collection">Collection</a>
+  </div>
+  <div class="footer-copy">© 2025 Channel 5.0. All rights reserved.</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── State ───────────────────────────────────────────────────────────────────
+const state = {
+  xConnected: false,
+  xHandle: '',
+  wallet: '',
+  points: 0,
+  tasks: {},
+  refCode: '',
+};
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+function init() {
+  const saved = localStorage.getItem('auto5ive_user');
+  if (saved) {
+    Object.assign(state, JSON.parse(saved));
+    restoreUI();
+  }
+  state.refCode = state.refCode || genRefCode();
+  updateRefLink();
+  renderLeaderboard();
+  updateWlCount();
+
+  // Check if referred
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('r')) {
+    localStorage.setItem('auto5ive_ref', params.get('r'));
+  }
+}
+
+function save() {
+  localStorage.setItem('auto5ive_user', JSON.stringify(state));
+}
+
+function genRefCode() {
+  return Math.random().toString(36).substr(2,8).toUpperCase();
+}
+
+// ─── X Connect ───────────────────────────────────────────────────────────────
+function connectX() {
+  // In production: redirect to /api/auth/twitter
+  // For demo: simulate connection
+  const handle = document.getElementById('handle-input').value.trim().replace('@','');
+  if (!handle) {
+    showToast('Enter your X handle first');
+    document.getElementById('handle-input').focus();
+    return;
+  }
+  state.xConnected = true;
+  state.xHandle = handle;
+  document.getElementById('x-btn-text').textContent = '✓  @' + handle;
+  document.getElementById('x-login-btn').style.borderColor = 'var(--teal-dim)';
+  document.getElementById('x-login-btn').style.color = 'var(--teal)';
+  showToast('X account linked — @' + handle);
+  addPoints(50, 'xconnect');
+  save();
+}
+
+// ─── Tasks ───────────────────────────────────────────────────────────────────
+function completeTask(el) {
+  const task = el.dataset.task;
+  const pts = parseInt(el.dataset.pts);
+  if (state.tasks[task]) return;
+
+  if (task === 'follow') window.open('https://x.com/Auto5ive','_blank');
+  if (task === 'retweet') window.open('https://x.com/intent/retweet?tweet_id=REPLACE_WITH_TWEET_ID','_blank');
+  if (task === 'like') window.open('https://x.com/intent/like?tweet_id=REPLACE_WITH_TWEET_ID','_blank');
+
+  el.classList.add('done');
+  state.tasks[task] = true;
+  addPoints(pts, task);
+  save();
+  showToast('+' + pts + ' points earned');
+}
+
+function addPoints(pts, source) {
+  state.points += pts;
+  animatePoints();
+  save();
+}
+
+function animatePoints() {
+  const el = document.getElementById('total-points');
+  el.style.color = 'var(--orange)';
+  el.textContent = state.points;
+  setTimeout(() => el.style.color = '', 400);
+}
+
+// ─── Save registration ───────────────────────────────────────────────────────
+function saveRegistration() {
+  const wallet = document.getElementById('wallet-input').value.trim();
+  const handle = document.getElementById('handle-input').value.trim().replace('@','');
+
+  if (!wallet.startsWith('0x') || wallet.length !== 42) {
+    showToast('Enter a valid ETH address (0x...)');
+    return;
+  }
+  if (!handle) {
+    showToast('Enter your X handle');
+    return;
+  }
+
+  state.wallet = wallet;
+  state.xHandle = handle;
+
+  if (!state.tasks['wallet']) {
+    document.querySelector('[data-task="wallet"]').classList.add('done');
+    state.tasks['wallet'] = true;
+    addPoints(50, 'wallet');
+  }
+
+  // In production: POST to /api/register with { wallet, handle, refCode, points }
+  // Supabase upsert: supabase.from('registrations').upsert({...})
+
+  showToast('Registration saved — rank updated');
+  save();
+  renderLeaderboard();
+  updateWlCount();
+}
+
+// ─── Ref link ────────────────────────────────────────────────────────────────
+function updateRefLink() {
+  const base = window.location.hostname;
+  const link = `${base}/?r=${state.refCode}`;
+  document.getElementById('ref-link').textContent = link;
+}
+
+function copyRef() {
+  const base = window.location.origin;
+  const link = `${base}/?r=${state.refCode}`;
+  navigator.clipboard.writeText(link).then(() => showToast('Referral link copied'));
+}
+
+// ─── Restore UI ──────────────────────────────────────────────────────────────
+function restoreUI() {
+  document.getElementById('total-points').textContent = state.points;
+  if (state.wallet) document.getElementById('wallet-input').value = state.wallet;
+  if (state.xHandle) document.getElementById('handle-input').value = '@' + state.xHandle;
+  if (state.xConnected) {
+    document.getElementById('x-btn-text').textContent = '✓  @' + state.xHandle;
+    document.getElementById('x-login-btn').style.borderColor = 'var(--teal-dim)';
+    document.getElementById('x-login-btn').style.color = 'var(--teal)';
+  }
+  // Restore tasks
+  document.querySelectorAll('.task-item').forEach(el => {
+    if (state.tasks[el.dataset.task]) el.classList.add('done');
+  });
+}
+
+// ─── Leaderboard (demo data + real user) ────────────────────────────────────
+const DEMO_LB = [
+  { handle: 'GhostOperative',   pts: 2450, refs: 8 },
+  { handle: 'CryptoPhantom',    pts: 1980, refs: 6 },
+  { handle: 'ShadowTrader',     pts: 1750, refs: 5 },
+  { handle: 'NightRunner_eth',  pts: 1400, refs: 4 },
+  { handle: 'CandelStick',      pts: 1200, refs: 3 },
+  { handle: 'BlockchainGhost',  pts: 980,  refs: 2 },
+  { handle: 'void_protocol',    pts: 750,  refs: 2 },
+  { handle: 'channel_lurker',   pts: 600,  refs: 1 },
+  { handle: 'ETH_Predator',     pts: 450,  refs: 1 },
+  { handle: 'dark_signal',      pts: 300,  refs: 0 },
+];
+
+function renderLeaderboard() {
+  const container = document.getElementById('lb-rows');
+  let lb = [...DEMO_LB];
+
+  // Insert real user if registered
+  if (state.wallet && state.xHandle && state.points > 0) {
+    lb.push({ handle: state.xHandle, pts: state.points, refs: 0, isYou: true });
+    lb.sort((a,b) => b.pts - a.pts);
+  }
+
+  const rankClass = (i) => i===0?'gold':i===1?'silver':i===2?'bronze':'other';
+  const gtdBadge = (i) => i < 5 ? '<span class="lb-badge">GTD</span>' : '';
+
+  container.innerHTML = lb.map((entry, i) => `
+    <div class="lb-row ${entry.isYou ? 'lb-you' : ''}">
+      <div class="lb-rank ${rankClass(i)}">${i+1}</div>
+      <div class="lb-name">
+        @${entry.handle} ${gtdBadge(i)} ${entry.isYou ? '<span class="lb-badge" style="border-color:var(--teal-dim);color:var(--teal)">YOU</span>' : ''}
+      </div>
+      <div class="lb-pts">${entry.pts.toLocaleString()}</div>
+      <div class="lb-refs">${entry.refs} refs</div>
+    </div>
+  `).join('');
+}
+
+function updateWlCount() {
+  const base = 234;
+  const extra = state.wallet ? 1 : 0;
+  document.getElementById('wl-count').textContent = (base + extra).toLocaleString();
+}
+
+// ─── Toast ───────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ─── Eye glow follow mouse ────────────────────────────────────────────────────
+document.addEventListener('mousemove', e => {
+  const glow = document.querySelector('.hero-eyeglow');
+  if (!glow) return;
+  const rect = document.getElementById('hero').getBoundingClientRect();
+  if (e.clientY > rect.bottom) return;
+  const x = (e.clientX / window.innerWidth) * 100;
+  glow.style.left = x + '%';
+});
+
+init();
+</script>
+</body>
+</html>
